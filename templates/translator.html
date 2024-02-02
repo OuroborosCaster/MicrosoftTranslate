@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>微软翻译</title>
+    <script src="https://unpkg.com/vue@3.4.0"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            width: 100%;
+        }
+
+        .func-bar {
+            background-color: #eeeeee;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            top: 0;
+        }
+
+        .language-selector {
+            width: 90%;
+            justify-content: space-around;
+            display: flex;
+            margin-top: 40px;
+            margin-left: 5%;
+            margin-right: 5%;
+            padding: 20px;
+            background-color: #fafafa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .language-selector select {
+            width: 45%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            height: 40px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            width: 50px;
+            padding: 10px;
+            border: none;
+            height: 40px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .main {
+            margin-top: 180px;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+
+        .textarea-container {
+            display: flex;
+            gap: 10px
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            height: auto;
+            overflow-y: hidden;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            transition: background-color 0.5s, color 0.5s;
+            resize: none;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+
+        @media(max-width:900px) {
+            body {
+                padding: 0px;
+                max-width: none
+            }
+
+            .textarea-container {
+                flex-direction: column
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="func-bar">
+            <div class="language-selector">
+                <select id="sourceLanguage" v-model="sourceLanguage">
+                </select>
+                <div class="button-container">
+                    <button id="swapButton">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                    <button @click="translate">
+                        <i class="fas fa-language"></i>
+                    </button>
+                </div><select id="targetLanguage" v-model="targetLanguage">
+                </select>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="textarea-container">
+
+                <textarea v-model="sourceText" placeholder="源文本" ref="sourceTextarea" @input="expand"></textarea>
+
+                <textarea v-model="targetText" placeholder="翻译结果" ref="targetTextarea" @input="expand"
+                    readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    languages: {},
+                    sourceLanguage: 'en',
+                    targetLanguage: 'zh-Hans',
+                    sourceText: '',
+                    targetText: ''
+                };
+            },
+            mounted() {
+                fetch('/api/languages')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.languages = data;
+                        this.updateSelectOptions();
+                    });
+
+                document.getElementById('swapButton').addEventListener('click', () => {
+                    this.swapLanguages();
+                });
+            },
+            methods: {
+                updateSelectOptions() {
+                    const sourceSelect = document.getElementById('sourceLanguage');
+                    const targetSelect = document.getElementById('targetLanguage');
+
+                    for (const code in this.languages) {
+                        const language = this.languages[code];
+                        sourceSelect.options.add(new Option(language, code));
+                        targetSelect.options.add(new Option(language, code));
+                    }
+
+                    sourceSelect.value = this.sourceLanguage;
+                    targetSelect.value = this.targetLanguage;
+                },
+                expand(event) {
+                    event.target.style.height = 'auto';
+                    event.target.style.height = (event.target.scrollHeight) + 'px';
+                },
+                translate() {
+                    // 创建一个对象，包含 sourceText、sourceLanguage 和 targetLanguage
+                    const data = {
+                        source: this.sourceLanguage,
+                        target: this.targetLanguage,
+                        text: this.sourceText
+                    };
+
+                    // 发送 POST 请求
+                    fetch('/api/translate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // 将返回的 result 赋值给 targetText
+                            this.targetText = data.result;
+
+                            // 更新 textarea 的高度
+                            this.$nextTick(() => {
+                                const textarea = this.$refs.targetTextarea;
+                                this.expand({ target: textarea });
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                },
+                swapLanguages() {
+                    [this.sourceLanguage, this.targetLanguage] = [this.targetLanguage, this.sourceLanguage];
+                    this.updateSelectOptions();
+                    if (this.targetText) {
+                        this.sourceText = this.targetText;
+                        this.$nextTick(() => {
+                            const textarea = this.$refs.sourceTextarea;
+                            this.expand({ target: textarea });
+                        });
+                        this.targetText = '';
+                        this.translate();
+                    }
+                },
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
