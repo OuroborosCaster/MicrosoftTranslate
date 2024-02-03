@@ -1,8 +1,8 @@
 from flask import Flask,jsonify,request,render_template
 from flask_cors import cross_origin
-import base64
+import os, requests, uuid
 app = Flask(__name__)
-app.logger.setLevel('DEBUG')
+# app.logger.setLevel('DEBUG')
 
 @app.route('/')
 def home():
@@ -54,9 +54,10 @@ def translate():
     return jsonify(result)
 
 def translate_api(source,target,text):
-    import requests, uuid
 
-    key = "82da1c285b8f4d2ab0ad9f4019dc40b6"
+
+    api_key=os.getenv('api_key')
+    print(api_key,type(api_key))
     endpoint = "https://api.cognitive.microsofttranslator.com"
     location = "global"
     path = '/translate'
@@ -67,7 +68,7 @@ def translate_api(source,target,text):
         'to': target
     }
     headers = {
-        'Ocp-Apim-Subscription-Key': key,
+        'Ocp-Apim-Subscription-Key': api_key,
         'Ocp-Apim-Subscription-Region': location,
         'Content-type': 'application/json',
         'X-ClientTraceId': str(uuid.uuid4())
