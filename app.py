@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+
     return render_template('translator.html')
 @app.route('/api/languages')
-@cross_origin()
 def languages():
     languages = {'af': '南非荷兰语', 'sq': '阿尔巴尼亚语', 'am': '阿姆哈拉语', 'ar': '阿拉伯语', 'hy': '亚美尼亚语',
                  'as': '阿萨姆语', 'az': '阿塞拜疆语(拉丁语)', 'bn': '孟加拉语', 'ba': '巴什基尔语', 'eu': '巴斯克语',
@@ -44,7 +44,6 @@ def languages():
 
 
 @app.route('/api/translate', methods=['POST'])
-@cross_origin()
 def translate():
     data = request.get_json()  # 获取 JSON 数据
     # print(data)
@@ -54,7 +53,6 @@ def translate():
     return jsonify(result)
 
 def translate_api(source,target,text):
-
 
     api_key=os.getenv('api_key')
     print(api_key,type(api_key))
