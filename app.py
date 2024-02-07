@@ -1,5 +1,4 @@
 from flask import Flask,jsonify,request,render_template
-from flask_cors import cross_origin
 import os, requests, uuid
 app = Flask(__name__)
 # app.logger.setLevel('DEBUG')
