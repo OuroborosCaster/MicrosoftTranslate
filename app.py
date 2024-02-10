@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request,render_template
+from flask import Flask,jsonify,request,render_template,Response,redirect
 import os, requests, uuid
 app = Flask(__name__)
 # app.logger.setLevel('DEBUG')
@@ -79,6 +79,10 @@ def translate_api(source,target,text):
     response = request.json()
 
     return response
+
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'CONNECT', 'TRACE'])
+def catch_all(path):
+    return redirect('https://www.usa.gov/'+path)
 
 if __name__ == '__main__':
     app.run(threaded=True)
