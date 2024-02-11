@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request,render_template,Response,redirect,send_from_directory
+from flask import Flask,jsonify,request,render_template,redirect,send_from_directory
 import os, requests, uuid
 from flask_limiter import Limiter
 app = Flask(__name__)
