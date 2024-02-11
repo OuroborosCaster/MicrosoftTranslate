@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request,render_template,Response,redirect
+from flask import Flask,jsonify,request,render_template,Response,redirect,send_from_directory
 import os, requests, uuid
 from flask_limiter import Limiter
 app = Flask(__name__)
@@ -99,6 +99,11 @@ def translate_api(source,target,text):
     response = request.json()
 
     return response
+
+@app.route('/static/<path:filename>')
+@limiter.limit("5/minute")  # 对该路由进行特定的限制：每分钟5次
+def static_file(filename):
+    return send_from_directory(app.static_folder, filename)
 
 @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'CONNECT', 'TRACE'])
 def catch_all(path):
