@@ -1,12 +1,32 @@
 from flask import Flask,jsonify,request,render_template,Response,redirect
 import os, requests, uuid
+from flask_limiter import Limiter
 app = Flask(__name__)
-# app.logger.setLevel('DEBUG')
+
+def limit_key_func():
+    x_forwarded_for = request.headers.get("X-Forwarded-For")
+    if x_forwarded_for:
+        # 如果 X-Forwarded-For 存在，取其值
+        ip = x_forwarded_for.split(",")[-1].strip()
+    else:
+        # 否则，取 remote_address
+        ip = request.remote_addr
+    return ip
+
+limiter = Limiter(
+    app=app,
+    key_func=limit_key_func # 使用访问者的 IP 地址作为标识
+
+)
+
 
 @app.route('/')
 def home():
 
     return render_template('translator.html')
+
+
+@limiter.limit("4000/day;1000/hour")
 @app.route('/api/languages')
 def languages():
     languages = {'af': '南非荷兰语', 'sq': '阿尔巴尼亚语', 'am': '阿姆哈拉语', 'ar': '阿拉伯语', 'hy': '亚美尼亚语',
@@ -41,7 +61,7 @@ def languages():
 
     return jsonify(languages)
 
-
+@limiter.limit("2000/day;500/hour")
 @app.route('/api/translate', methods=['POST'])
 def translate():
     data = request.get_json()  # 获取 JSON 数据
