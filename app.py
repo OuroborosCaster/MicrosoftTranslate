@@ -1,11 +1,10 @@
 from flask import Flask,jsonify,request,render_template,redirect,send_from_directory
 from flask_limiter import Limiter
-import os, requests, uuid
+import requests, uuid
 app = Flask(__name__)
-app.config.from_mapping()
-app.config.from_envvar()
-app.config.from_prefixed_env()
-app.config.fromkeys()
+
+app.config.from_pyfile('settings.py')
+
 def limit_key_func():
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
@@ -16,10 +15,10 @@ def limit_key_func():
         ip = request.remote_addr
     return ip
 
-redis_password = os.getenv('REDIS_PASSWORD')
-redis_host = os.getenv('REDIS_HOST')
-redis_port = os.getenv('REDIS_PORT')
-redis_db = os.getenv('REDIS_DB')
+redis_password = app.config['REDIS_PASSWORD']
+redis_host = app.config['REDIS_HOST']
+redis_port = app.config['REDIS_PORT']
+redis_db = app.config['REDIS_DB']
 
 limiter = Limiter(
     app=app,
@@ -73,7 +72,7 @@ def languages():
 @app.route('/api/translate', methods=['POST'])
 def translate():
     data = request.get_json()  # 获取 JSON 数据
-    # print(data)
+
     text = translate_api(data['source'], data['target'],data['text'])[0]['translations'][0]['text']
 
     result={'result':text}
@@ -81,7 +80,7 @@ def translate():
 
 def translate_api(source,target,text):
 
-    api_key=os.getenv('api_key')
+    api_key=app.config['API_KEY']
     print(api_key,type(api_key))
     endpoint = "https://api.cognitive.microsofttranslator.com"
     location = "global"

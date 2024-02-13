@@ -2,3 +2,4 @@ Flask==3.0.1
 Flask_Limiter==3.5.0
 gunicorn==21.2.0
 Requests==2.31.0
+redis==5.0.1
