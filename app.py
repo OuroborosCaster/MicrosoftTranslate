@@ -2,7 +2,10 @@ from flask import Flask,jsonify,request,render_template,redirect,send_from_direc
 from flask_limiter import Limiter
 import os, requests, uuid
 app = Flask(__name__)
-
+app.config.from_mapping()
+app.config.from_envvar()
+app.config.from_prefixed_env()
+app.config.fromkeys()
 def limit_key_func():
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
@@ -13,10 +16,15 @@ def limit_key_func():
         ip = request.remote_addr
     return ip
 
+redis_password = os.getenv('REDIS_PASSWORD')
+redis_host = os.getenv('REDIS_HOST')
+redis_port = os.getenv('REDIS_PORT')
+redis_db = os.getenv('REDIS_DB')
+
 limiter = Limiter(
     app=app,
-    key_func=limit_key_func # 使用访问者的 IP 地址作为标识
-
+    key_func=limit_key_func, # 使用访问者的 IP 地址作为标识
+    storage_uri=f'redis://:{redis_password}@{redis_host}:{redis_port}/{redis_db}'
 )
 
 
