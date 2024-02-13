@@ -15,6 +15,7 @@ def limit_key_func():
         ip = request.remote_addr
     return ip
 
+#redis数据库配置
 redis_password = app.config['REDIS_PASSWORD']
 redis_host = app.config['REDIS_HOST']
 redis_port = app.config['REDIS_PORT']
