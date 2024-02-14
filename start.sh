@@ -2,4 +2,5 @@
 
 gunicorn -c gunicorn.conf.py app:app
 
-ln -sf /dev/stdout ./app/logs/access.log && ln -sf /dev/stderr ./app/logs/error.log &
+tail -f ./logs/access.log > /dev/stdout &
+tail -f ./logs/error.log > /dev/stderr &
