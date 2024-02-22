@@ -4,3 +4,4 @@ Flask_PyMongo==2.3.0
 pymongo==4.6.1
 Requests==2.31.0
 gunicorn==21.2.0
+redis==5.0.1
