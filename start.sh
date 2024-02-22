@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # 启动你的应用
-gunicorn -c gunicorn.conf.py app:app &
+gunicorn -c gunicorn.conf.py main:app &
 
 # 实时查看访问日志文件的内容，并输出到STDOUT
 tail -f logs/access.log &

@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eeeeee;
+    width: 100%;
+}
+
+.func-bar {
+    background-color: #eeeeee;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    top: 0;
+}
+
+.language-selector {
+    width: 90%;
+    justify-content: space-around;
+    display: flex;
+    margin-top: 40px;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 20px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+.language-selector select {
+    width: 45%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    height: 40px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    width: 50px;
+    padding: 10px;
+    border: none;
+    height: 40px;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.main {
+    margin-top: 180px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 40px;
+    padding-top: 40px;
+}
+
+.textarea-container {
+    display: flex;
+    gap: 10px
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    height: auto;
+    overflow-y: hidden;
+    margin-bottom: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.5s, color 0.5s;
+    resize: none;
+    border-radius: 10px;
+    background-color: #fafafa;
+}
+
+@media (max-width: 900px) {
+    body {
+        padding: 0px;
+        max-width: none
+    }
+
+    .textarea-container {
+        flex-direction: column
+    }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>微软翻译</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="apple-touch-icon" sizes="2800x2800" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body>
+<div id="app">
+    <div class="func-bar">
+        <div class="language-selector">
+            <select id="sourceLanguage" v-model="sourceLanguage">
+            </select>
+            <div class="button-container">
+                <button id="swapButton">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+                <button @click="translate">
+                    <i class="fas fa-language"></i>
+                </button>
+            </div>
+            <select id="targetLanguage" v-model="targetLanguage">
+            </select>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="textarea-container">
+
+            <textarea v-model="sourceText" placeholder="源文本" ref="sourceTextarea" @input="expand"></textarea>
+
+            <textarea v-model="targetText" placeholder="翻译结果" ref="targetTextarea" @input="expand"
+                      readonly></textarea>
+        </div>
+    </div>
+</div>
+<script src="https://unpkg.com/vue@3.4.0"></script>
+<script src="/index.js"></script>
+</body>
+
+</html>
